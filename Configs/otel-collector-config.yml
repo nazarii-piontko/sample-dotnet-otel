@@ -24,19 +24,36 @@ exporters:
     tls:
       insecure: true
 
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+
 processors:
   batch:
+
   spanmetrics:
     metrics_exporter: prometheus
+
+  resource:
+    attributes:
+      - action: insert
+        key: service_name
+        from_attribute: service.name
+      - action: insert
+        key: loki.resource.labels
+        value: service_name
 
 service:
   pipelines:
     traces:
-      receivers: [otlp, jaeger]
-      processors: [spanmetrics, batch]
-      exporters: [jaeger]
+      receivers: [ otlp, jaeger ]
+      processors: [ spanmetrics, batch ]
+      exporters: [ jaeger ]
     # The exporter name in this pipeline must match the spanmetrics.metrics_exporter name.
     # The receiver is just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
     metrics/spanmetrics:
-      receivers: [otlp/spanmetrics]
-      exporters: [prometheus]
+      receivers: [ otlp/spanmetrics ]
+      exporters: [ prometheus ]
+    logs:
+      receivers: [ otlp ]
+      processors: [ resource ]
+      exporters: [ loki ]

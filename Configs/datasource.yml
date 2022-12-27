@@ -8,10 +8,9 @@ datasources:
     isDefault: true
     access: proxy
     editable: true
-  
-  - name: Jaeger
-    type: jaeger
-    url: http://jaeger:16686
-    isDefault: false
+
+  - name: Loki
+    type: loki
     access: proxy
-    editable: true
+    uid: P8E80F9AEF21F6940
+    url: http://loki:3100
