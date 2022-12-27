@@ -15,7 +15,7 @@ There is .NET SDK which helps to integrate .NET application with OpenTelemetry:
 
 ## Goal
 
-The goal of this project is play around with exporting .NET service metrics to [Prometheus](https://prometheus.io/) and tracing service to service communication with [Jaeger](https://www.jaegertracing.io/) using OpenTelementry .NET SDK.
+The goal of this project is play around with exporting .NET service metrics to [Prometheus](https://prometheus.io/), tracing service to service communication with [Jaeger](https://www.jaegertracing.io/) and collecting logs with [Loki](https://grafana.com/oss/loki/) using OpenTelementry .NET SDK.
 
 ## Components diagram
 
