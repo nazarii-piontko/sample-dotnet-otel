@@ -36,10 +36,15 @@ Also `SampleDotNetOTEL.BusinessService` has injected "faults" to simulate servic
 
 The second one is `SampleDotNetOTEL.ProxyService`. It exposes the same 3 endpoints as the first service but it just make a HTTP requests `SampleDotNetOTEL.BusinessService` and forward the response as it is.
 
+All services coulld be run with `docker-compose`.
+
+`docker-compose.yml` contains as one of the services a dummy client called `spammer` which makes a requests to 3 endpoints every half a second.
+
 ## How to run locally
 
 * Ensure you have `Docker` installed and running.
 * Ensure you have `docker-compose` installed.
+* Run `docker-compose build`
 * Run `docker-compose up`
 * As soon as `docker-compose` start services they should be available via HTTP. Here is some links:
   * Grafana pre-build dashboard should be accessible via http://localhost:3000/d/KdDACDp4z/asp-net-otel-metrics
