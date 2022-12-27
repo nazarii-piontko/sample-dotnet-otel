@@ -36,7 +36,7 @@ Also `SampleDotNetOTEL.BusinessService` has injected "faults" to simulate servic
 
 The second one is `SampleDotNetOTEL.ProxyService`. It exposes the same 3 endpoints as the first service but it just make a HTTP requests `SampleDotNetOTEL.BusinessService` and forward the response as it is.
 
-All services coulld be run with `docker-compose`.
+All services could be run with `docker-compose`.
 
 `docker-compose.yml` contains as one of the services a dummy client called `spammer` which makes a requests to 3 endpoints every half a second.
 
