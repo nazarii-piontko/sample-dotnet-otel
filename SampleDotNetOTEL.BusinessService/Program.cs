@@ -7,22 +7,24 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using SampleDotNetOTEL.BusinessService.Controllers;
 using SampleDotNetOTEL.BusinessService.Persistence;
+using SampleDotNetOTEL.BusinessService.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddOpenTelemetry(options =>
-{
-    options.IncludeFormattedMessage = true;
-    options.IncludeScopes = true;
-    
-    var resBuilder = ResourceBuilder.CreateDefault();
-    var serviceName = builder.Configuration["ServiceName"]!;
-    resBuilder.AddService(serviceName);
-    options.SetResourceBuilder(resBuilder);
-    
-    options.AddOtlpExporter();
-});
+builder.Logging
+    .ClearProviders()
+    .AddOpenTelemetry(options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.IncludeScopes = true;
+
+        var resBuilder = ResourceBuilder.CreateDefault();
+        var serviceName = builder.Configuration["ServiceName"]!;
+        resBuilder.AddService(serviceName);
+        options.SetResourceBuilder(resBuilder);
+
+        options.AddOtlpExporter();
+    });
 
 builder.Services.AddControllers();
 
@@ -32,6 +34,8 @@ builder.Services.AddSingleton(new ErrorResponsePolicy(builder.Configuration.GetV
 
 builder.Services.AddDbContext<WeatherDbContext>(b => b.UseNpgsql(builder.Configuration["ConnectionStrings:Default"]));
 builder.Services.AddTransient<WeatherDbInitializer>();
+
+builder.Services.AddHostedService<MessagesProcessingBackgroundService>();
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(b =>
@@ -45,6 +49,7 @@ builder.Services.AddOpenTelemetry()
         })
         .AddHttpClientInstrumentation()
         .AddEntityFrameworkCoreInstrumentation()
+        .AddSource(MessagesProcessingBackgroundService.TraceActivityName)
         .AddOtlpExporter())
     .WithMetrics(b => b
         .AddAspNetCoreInstrumentation(o =>

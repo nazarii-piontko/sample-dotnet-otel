@@ -70,6 +70,18 @@ services:
     networks:
       - backend
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_VHOST=sample-dotnet-otel
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    networks:
+      - backend
+
   proxy-service:
     build:
       dockerfile: SampleDotNetOTEL.ProxyService/Dockerfile
@@ -86,6 +98,8 @@ services:
       - "127.0.0.1:8080:80"
     networks:
       - backend
+    depends_on:
+      - rabbitmq
   
   business-service-1:
     build:
@@ -106,6 +120,7 @@ services:
       - backend
     depends_on:
       - postgres
+      - rabbitmq
   
   business-service-2:
     build:
@@ -125,6 +140,7 @@ services:
       - backend
     depends_on:
       - postgres
+      - rabbitmq
   
   business-service-3:
     build:
@@ -144,6 +160,7 @@ services:
       - backend
     depends_on:
       - postgres
+      - rabbitmq
   
   spammer:
     image: alpine/curl
@@ -156,6 +173,7 @@ services:
           curl -s "http://proxy-service/weather" || true
           curl -s "http://proxy-service/hello" || true
           curl -s "http://proxy-service/hello?name=John" || true
+          curl -s -X POST -H "Content-Type: application/json" -d "{\"message\": \"This is a test message send thought RabbitMQ ($$(date))\"}" "http://proxy-service/messages" || true
           sleep 0.5
         done
     networks:

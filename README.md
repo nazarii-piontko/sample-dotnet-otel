@@ -30,11 +30,14 @@ Two .NET services have been implemented:
 The first one is `SampleDotNetOTEL.BusinessService`. It exposes 3 endpoints:
 * Get fake auto-generated weather records from the database (PostgreSQL).
 * Get `"Hello World"` string
-* Get `"Hello {USER_NAME}"` string for passed username parament.
+* Get `"Hello {USER_NAME}"` string for passed username parameter. 
 
 Also `SampleDotNetOTEL.BusinessService` has injected "faults" to simulate service errors.
 
+And also `SampleDotNetOTEL.BusinessService` reads messages from RabbitMQ and log it.
+
 The second one is `SampleDotNetOTEL.ProxyService`. It exposes the same 3 endpoints as the first service but it just make a HTTP requests `SampleDotNetOTEL.BusinessService` and forward the response as it is.
+Also it provides the forth endpoint to `POST` message which will be queued to RabbitMQ and later read by `SampleDotNetOTEL.BusinessService` to log it.
 
 All services could be run with `docker-compose`.
 
@@ -57,7 +60,11 @@ All services could be run with `docker-compose`.
 
 #### Jaeger trace
 
-![Jaeger trace](Images/JaegerTrace.png)
+##### Jaeger trace for HTTP
+![Jaeger trace for HTTP](Images/JaegerTraceHTTP.png)
+
+##### Jaeger trace for RabbitMQ
+![Jaeger trace for RabbitMQ](Images/JaegerTraceRabbitMQ.png)
 
 #### Jaeger monitor
 

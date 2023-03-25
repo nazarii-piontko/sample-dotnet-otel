@@ -8,19 +8,20 @@ using SampleDotNetOTEL.ProxyService.ExternalServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddOpenTelemetry(options =>
-{
-    options.IncludeFormattedMessage = true;
-    options.IncludeScopes = true;
-    
-    var resBuilder = ResourceBuilder.CreateDefault();
-    var serviceName = builder.Configuration["ServiceName"]!;
-    resBuilder.AddService(serviceName);
-    options.SetResourceBuilder(resBuilder);
-    
-    options.AddOtlpExporter();
-});
+builder.Logging
+    .ClearProviders()
+    .AddOpenTelemetry(options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.IncludeScopes = true;
+
+        var resBuilder = ResourceBuilder.CreateDefault();
+        var serviceName = builder.Configuration["ServiceName"]!;
+        resBuilder.AddService(serviceName);
+        options.SetResourceBuilder(resBuilder);
+
+        options.AddOtlpExporter();
+    });
 
 builder.Services.AddControllers();
 
@@ -31,6 +32,8 @@ builder.Services.AddHttpClient<BusinessServiceClient>(c =>
     var urls = builder.Configuration["BusinessServiceBaseUrl"]!.Split(';', StringSplitOptions.RemoveEmptyEntries);
     c.BaseAddress = new Uri(urls[Random.Shared.Next(urls.Length)]);
 });
+
+builder.Services.AddSingleton<MessageBroker>();
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(b =>
@@ -43,6 +46,7 @@ builder.Services.AddOpenTelemetry()
             o.Filter = ctx => ctx.Request.Path != "/metrics";
         })
         .AddHttpClientInstrumentation()
+        .AddSource(MessageBroker.TraceActivityName)
         .AddOtlpExporter())
     .WithMetrics(b => b
         .AddAspNetCoreInstrumentation(o =>
