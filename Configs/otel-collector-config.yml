@@ -1,38 +1,26 @@
 receivers:
-  jaeger:
-    protocols:
-      thrift_http:
-        endpoint: "0.0.0.0:14278"
-
   otlp:
     protocols:
       grpc:
       http:
 
-  # Dummy receiver that's never used, because a pipeline is required to have one.
-  otlp/spanmetrics:
-    protocols:
-      grpc:
-        endpoint: "localhost:65535"
-
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
 
-  jaeger:
-    endpoint: "jaeger:14250"
+  otlp:
+    endpoint: "jaeger:4317"
     tls:
       insecure: true
 
   loki:
     endpoint: http://loki:3100/loki/api/v1/push
 
-processors:
-  batch:
-
+connectors:
   spanmetrics:
-    metrics_exporter: prometheus
+    namespace: span.metrics
 
+processors:
   resource:
     attributes:
       - action: insert
@@ -45,13 +33,12 @@ processors:
 service:
   pipelines:
     traces:
-      receivers: [ otlp, jaeger ]
-      processors: [ spanmetrics, batch ]
-      exporters: [ jaeger ]
+      receivers: [ otlp ]
+      exporters: [ otlp, spanmetrics ]
     # The exporter name in this pipeline must match the spanmetrics.metrics_exporter name.
     # The receiver is just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
-    metrics/spanmetrics:
-      receivers: [ otlp/spanmetrics ]
+    metrics:
+      receivers: [ spanmetrics ]
       exporters: [ prometheus ]
     logs:
       receivers: [ otlp ]

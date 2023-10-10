@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.HttpLogging;
-using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -56,8 +55,7 @@ builder.Services.AddOpenTelemetry()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
         .AddProcessInstrumentation()
-        .AddPrometheusExporter())
-    .StartWithHost();
+        .AddPrometheusExporter());
 
 var app = builder.Build();
 
