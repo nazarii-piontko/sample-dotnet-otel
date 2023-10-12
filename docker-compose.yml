@@ -2,11 +2,10 @@ version: "3.5"
 
 services:
   jaeger:
-    image: jaegertracing/all-in-one:latest
-    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    image: jaegertracing/all-in-one:1.50
+    command: --query.ui-config=/etc/jaeger/jaeger-ui.json --collector.otlp.enabled=true --prometheus.server-url=http://prometheus:9090 --prometheus.query.support-spanmetrics-connector=true
     environment:
       - METRICS_STORAGE_TYPE=prometheus
-      - PROMETHEUS_SERVER_URL=http://prometheus:9090
     volumes:
       - ./Configs/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
     ports:
@@ -15,7 +14,7 @@ services:
       - backend
   
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:latest
+    image: otel/opentelemetry-collector-contrib:0.86.0
     command: --config /etc/otelcol/otel-collector-config.yml
     volumes:
       - ./Configs/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
@@ -27,7 +26,7 @@ services:
       - jaeger
  
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.47.1
     volumes:
       - ./Configs/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -36,7 +35,7 @@ services:
       - backend
   
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:2.9.1
     command: -config.file=/mnt/config/loki-config.yml
     volumes:
       - ./Configs/loki.yml:/mnt/config/loki-config.yml
@@ -46,7 +45,7 @@ services:
       - backend
   
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.1.4
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -63,7 +62,7 @@ services:
       - backend
 
   postgres:
-    image: postgres:10.7
+    image: postgres:16
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
@@ -71,7 +70,7 @@ services:
       - backend
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.12-management
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=password
@@ -163,7 +162,7 @@ services:
       - rabbitmq
   
   spammer:
-    image: alpine/curl
+    image: alpine/curl:latest
     entrypoint:
       - /bin/sh
       - -c
