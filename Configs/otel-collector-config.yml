@@ -18,7 +18,9 @@ exporters:
 
 connectors:
   spanmetrics:
-    namespace: span.metrics
+    histogram:
+      explicit:
+        buckets: [ 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1000ms ]
 
 processors:
   resource:
@@ -35,8 +37,6 @@ service:
     traces:
       receivers: [ otlp ]
       exporters: [ otlp, spanmetrics ]
-    # The exporter name in this pipeline must match the spanmetrics.metrics_exporter name.
-    # The receiver is just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
     metrics:
       receivers: [ spanmetrics ]
       exporters: [ prometheus ]
