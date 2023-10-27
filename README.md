@@ -8,14 +8,14 @@ Links:
 * https://opentelemetry.io/
 * https://opentelemetry.io/docs/
 
-There is .NET SDK which helps to integrate .NET application with OpenTelemetry:
+There is a .NET SDK that helps to integrate .NET applications with OpenTelemetry:
 * https://opentelemetry.io/docs/instrumentation/net/getting-started/
 * https://github.com/open-telemetry/opentelemetry-dotnet
 * https://www.nuget.org/packages/OpenTelemetry/
 
 ## Goal
 
-The goal of this project is play around with exporting .NET service metrics to [Prometheus](https://prometheus.io/), tracing service to service communication with [Jaeger](https://www.jaegertracing.io/) and collecting logs with [Loki](https://grafana.com/oss/loki/) using OpenTelementry .NET SDK.
+The goal of this project is to play around with exporting .NET service metrics to [Prometheus](https://prometheus.io/), tracing service-to-service communication with [Jaeger](https://www.jaegertracing.io/), and collecting logs with [Loki](https://grafana.com/oss/loki/) using OpenTelementry .NET SDK.
 
 ## Components diagram
 
@@ -30,18 +30,18 @@ Two .NET services have been implemented:
 The first one is `SampleDotNetOTEL.BusinessService`. It exposes 3 endpoints:
 * Get fake auto-generated weather records from the database (PostgreSQL).
 * Get `"Hello World"` string
-* Get `"Hello {USER_NAME}"` string for passed username parameter. 
+* Get `"Hello {USER_NAME}"` string for the passed username parameter. 
 
 Also `SampleDotNetOTEL.BusinessService` has injected "faults" to simulate service errors.
 
-And also `SampleDotNetOTEL.BusinessService` reads messages from RabbitMQ and log it.
+And also `SampleDotNetOTEL.BusinessService` reads messages from RabbitMQ and logs them.
 
-The second one is `SampleDotNetOTEL.ProxyService`. It exposes the same 3 endpoints as the first service but it just make a HTTP requests `SampleDotNetOTEL.BusinessService` and forward the response as it is.
-Also it provides the forth endpoint to `POST` message which will be queued to RabbitMQ and later read by `SampleDotNetOTEL.BusinessService` to log it.
+The second one is `SampleDotNetOTEL.ProxyService`. It exposes the same 3 endpoints as the first service but it just makes an HTTP request to `SampleDotNetOTEL.BusinessService` and forwards the response as it is.
+Also, it provides the fourth endpoint to `POST` message which will be queued to RabbitMQ and later read by `SampleDotNetOTEL.BusinessService` to log it.
 
 All services could be run with `docker-compose`.
 
-`docker-compose.yml` contains as one of the services a dummy client called `spammer` which makes a requests to 3 endpoints every half a second.
+`docker-compose.yml` contains as one of the services a dummy client called `spammer` which makes requests to 3 endpoints every half a second.
 
 ## How to run locally
 
@@ -49,9 +49,10 @@ All services could be run with `docker-compose`.
 * Ensure you have `docker-compose` installed.
 * Run `docker-compose build`
 * Run `docker-compose up`
-* As soon as `docker-compose` start services they should be available via HTTP. Here is some links:
+* As soon as `docker-compose` starts services they should be available via HTTP. Here are some links:
   * Grafana pre-build dashboard should be accessible via http://localhost:3000/d/KdDACDp4z/asp-net-otel-metrics
   * Jaeger should be accessible via http://localhost:16686/search
+  * Prometheus should be accessible via http://localhost:9090/graph
   * Proxy service should be accessible via http://localhost:8080/hello
 
 ## Screenshots
