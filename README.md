@@ -1,6 +1,6 @@
 # Sample ASP.NET (.NET 7) project with OpenTelemetry integration
 
-## OpenTelemetry
+## 📡 OpenTelemetry
 
 OpenTelemetry is a collection of tools, APIs, and SDKs to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) to help you analyze your software’s performance and behavior.
 
@@ -13,17 +13,17 @@ There is a .NET SDK that helps to integrate .NET applications with OpenTelemetry
 * https://github.com/open-telemetry/opentelemetry-dotnet
 * https://www.nuget.org/packages/OpenTelemetry/
 
-## Goal
+## 🎯 Goal
 
 The goal of this project is to play around with exporting .NET service metrics to [Prometheus](https://prometheus.io/), tracing service-to-service communication with [Jaeger](https://www.jaegertracing.io/), and collecting logs with [Loki](https://grafana.com/oss/loki/) using OpenTelementry .NET SDK.
 
-## Components diagram
+## 📊 Components diagram
 
 ![Components Diagram](Images/Diagram.png)
 
 [Open in app.diagrams.net](https://viewer.diagrams.net/?url=https://raw.githubusercontent.com/nazarii-piontko/sample-dotnet-otel/main/Diagram.xml)
 
-## Implementation details
+## 🔍 Implementation details
 
 Two .NET services have been implemented:
 
@@ -43,7 +43,7 @@ All services could be run with `docker-compose`.
 
 `docker-compose.yml` contains as one of the services a dummy client called `spammer` which makes requests to 3 endpoints every half a second.
 
-## How to run locally
+## 🚀 How to run locally
 
 * Ensure you have `Docker` installed and running.
 * Ensure you have `docker-compose` installed.
@@ -55,7 +55,7 @@ All services could be run with `docker-compose`.
   * Prometheus should be accessible via http://localhost:9090/graph
   * Proxy service should be accessible via http://localhost:8080/hello
 
-## Screenshots
+## 📸 Screenshots
 
 ### Jaeger
 
@@ -78,3 +78,7 @@ Dashboard: https://grafana.com/grafana/dashboards/17706-asp-net-otel-metrics
 ![Grafana dashboard part 1](Images/GrafanaOTELMetrics1.png)
 
 ![Grafana dashboard part 2](Images/GrafanaOTELMetrics2.png)
+
+## 🤝 How to Contribute
+
+Interested in contributing? Check out our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to make this project even better!
