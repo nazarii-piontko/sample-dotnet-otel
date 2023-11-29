@@ -9,7 +9,6 @@ using SampleDotNetOTEL.ProxyService.ExternalServices;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging
-    .ClearProviders()
     .AddOpenTelemetry(options =>
     {
         options.IncludeFormattedMessage = true;

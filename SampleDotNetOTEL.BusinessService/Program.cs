@@ -12,7 +12,6 @@ using SampleDotNetOTEL.BusinessService.Workers;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging
-    .ClearProviders()
     .AddOpenTelemetry(options =>
     {
         options.IncludeFormattedMessage = true;
