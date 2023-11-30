@@ -75,6 +75,8 @@ All services could be run with `docker-compose`.
 
 Dashboard: https://grafana.com/grafana/dashboards/17706-asp-net-otel-metrics
 
+Note: due to regular updates in OTEL metric names, ensure you download the appropriate dashboard revision.
+
 ![Grafana dashboard part 1](Images/GrafanaOTELMetrics1.png)
 
 ![Grafana dashboard part 2](Images/GrafanaOTELMetrics2.png)
