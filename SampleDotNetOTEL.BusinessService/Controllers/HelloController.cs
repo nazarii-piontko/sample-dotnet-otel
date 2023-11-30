@@ -5,19 +5,12 @@ namespace SampleDotNetOTEL.BusinessService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class HelloController : ControllerBase
+public class HelloController(ErrorResponsePolicy errorResponsePolicy) : ControllerBase
 {
-    private readonly ErrorResponsePolicy _errorResponsePolicy;
-
-    public HelloController(ErrorResponsePolicy errorResponsePolicy)
-    {
-        _errorResponsePolicy = errorResponsePolicy;
-    }
-
     [HttpGet]
     public IActionResult Get()
     {
-        if (_errorResponsePolicy.IsProduceError())
+        if (errorResponsePolicy.IsProduceError())
             return StatusCode(500);
         return Ok("Hello World");
     }
@@ -25,7 +18,7 @@ public class HelloController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] HelloRequest request)
     {
-        if (_errorResponsePolicy.IsProduceError())
+        if (errorResponsePolicy.IsProduceError())
             return StatusCode(500);
         return Ok($"Hello {request.Name}");
     }

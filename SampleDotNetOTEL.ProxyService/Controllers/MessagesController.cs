@@ -6,19 +6,12 @@ namespace SampleDotNetOTEL.ProxyService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class MessagesController : ControllerBase
+public class MessagesController(MessageBroker messageBroker) : ControllerBase
 {
-    private readonly MessageBroker _messageBroker;
-
-    public MessagesController(MessageBroker messageBroker)
-    {
-        _messageBroker = messageBroker;
-    }
-
     [HttpPost]
     public IActionResult Post([FromBody] MessageRequest request)
     {
-        _messageBroker.PublishMessage(request.Message);
+        messageBroker.PublishMessage(request.Message);
         return Ok();
     }
 

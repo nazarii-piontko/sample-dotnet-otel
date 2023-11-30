@@ -2,14 +2,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SampleDotNetOTEL.BusinessService.Persistence;
 
-public class WeatherDbContext : DbContext
+public class WeatherDbContext(DbContextOptions<WeatherDbContext> options)
+    : DbContext(options)
 {
     public DbSet<WeatherEntry> WeatherEntries { get; set; } = null!;
-    
-    public WeatherDbContext(DbContextOptions<WeatherDbContext> options)
-        : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -5,21 +5,14 @@ namespace SampleDotNetOTEL.ProxyService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class HelloController : ControllerBase
+public class HelloController(BusinessServiceClient client) : ControllerBase
 {
-    private readonly BusinessServiceClient _client;
-
-    public HelloController(BusinessServiceClient client)
-    {
-        _client = client;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Get(string? name)
     {
         var response = string.IsNullOrEmpty(name)
-            ? await _client.GetHelloAsync()
-            : await _client.GetHelloAsync(name);
+            ? await client.GetHelloAsync()
+            : await client.GetHelloAsync(name);
         return Ok(response);
     }
 }

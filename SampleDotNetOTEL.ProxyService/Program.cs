@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpLogging;
+using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -8,7 +9,6 @@ using SampleDotNetOTEL.ProxyService.ExternalServices;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging
-    .ClearProviders()
     .AddOpenTelemetry(options =>
     {
         options.IncludeFormattedMessage = true;
@@ -34,24 +34,24 @@ builder.Services.AddHttpClient<BusinessServiceClient>(c =>
 
 builder.Services.AddSingleton<MessageBroker>();
 
+builder.Services.Configure<AspNetCoreInstrumentationOptions>(options =>
+{
+    // Filter out instrumentation of the Prometheus scraping endpoint.
+    options.Filter = ctx => ctx.Request.Path != "/metrics";
+});
+
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(b =>
     {
         b.AddService(builder.Configuration["ServiceName"]!);
     })
     .WithTracing(b => b
-        .AddAspNetCoreInstrumentation(o =>
-        {
-            o.Filter = ctx => ctx.Request.Path != "/metrics";
-        })
+        .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddSource(MessageBroker.TraceActivityName)
         .AddOtlpExporter())
     .WithMetrics(b => b
-        .AddAspNetCoreInstrumentation(o =>
-        {
-            o.Filter = (_, ctx) => ctx.Request.Path != "/metrics";
-        })
+        .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
         .AddProcessInstrumentation()

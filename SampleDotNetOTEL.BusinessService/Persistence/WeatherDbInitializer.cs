@@ -4,14 +4,21 @@ using Polly;
 
 namespace SampleDotNetOTEL.BusinessService.Persistence;
 
-public sealed class WeatherDbInitializer
+public sealed class WeatherDbInitializer(WeatherDbContext dbContext)
 {
-    private readonly WeatherDbContext _dbContext;
-
-    public WeatherDbInitializer(WeatherDbContext dbContext)
+    private static readonly string[] Summaries =
     {
-        _dbContext = dbContext;
-    }
+        "Freezing",
+        "Bracing",
+        "Chilly",
+        "Cool",
+        "Mild",
+        "Warm",
+        "Balmy",
+        "Hot",
+        "Sweltering",
+        "Scorching"
+    };
 
     public async Task InitAsync()
     {
@@ -20,18 +27,17 @@ public sealed class WeatherDbInitializer
             .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(1))
             .ExecuteAsync(async () =>
             {
-                await _dbContext.Database.MigrateAsync();
+                await dbContext.Database.MigrateAsync();
 
-                if (!await _dbContext.WeatherEntries.AnyAsync())
+                if (!await dbContext.WeatherEntries.AnyAsync())
                 {
-                    var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-                    _dbContext.WeatherEntries.AddRange(Enumerable.Range(1, 5).Select(index => new WeatherEntry
-                    {
-                        Date = DateTime.UtcNow.AddDays(index),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    }));
-                    await _dbContext.SaveChangesAsync();
+                    dbContext.WeatherEntries
+                        .AddRange(Enumerable.Range(1, 5)
+                            .Select(index => new WeatherEntry(
+                                DateTime.UtcNow.AddDays(index),
+                                Random.Shared.Next(-20, 55),
+                                Summaries[Random.Shared.Next(Summaries.Length)])));
+                    await dbContext.SaveChangesAsync();
                 }
             });
     }
