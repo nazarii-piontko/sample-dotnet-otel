@@ -5,18 +5,11 @@ namespace SampleDotNetOTEL.ProxyService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WeatherController : ControllerBase
+public class WeatherController(BusinessServiceClient client) : ControllerBase
 {
-    private readonly BusinessServiceClient _client;
-
-    public WeatherController(BusinessServiceClient client)
-    {
-        _client = client;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _client.GetWeatherAsync());
+        return Ok(await client.GetWeatherAsync());
     }
 }

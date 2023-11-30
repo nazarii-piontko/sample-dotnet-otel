@@ -1,4 +1,4 @@
-# Sample ASP.NET (.NET 7) project with OpenTelemetry integration
+# Sample ASP.NET (.NET 8) project with OpenTelemetry integration
 
 ## 📡 OpenTelemetry
 

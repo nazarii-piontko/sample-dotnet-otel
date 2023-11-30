@@ -1,17 +1,10 @@
 namespace SampleDotNetOTEL.ProxyService.ExternalServices;
 
-public sealed class BusinessServiceClient
+public sealed class BusinessServiceClient(HttpClient httpClient)
 {
-    private readonly HttpClient _httpClient;
-
-    public BusinessServiceClient(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-    
     public async Task<string> GetWeatherAsync()
     {
-        var response = await _httpClient.GetAsync("weather");
+        var response = await httpClient.GetAsync("weather");
         response.EnsureSuccessStatusCode();
         
         var content = await response.Content.ReadAsStringAsync();
@@ -20,7 +13,7 @@ public sealed class BusinessServiceClient
     
     public async Task<string> GetHelloAsync()
     {
-        var response = await _httpClient.GetAsync("hello");
+        var response = await httpClient.GetAsync("hello");
         response.EnsureSuccessStatusCode();
         
         var content = await response.Content.ReadAsStringAsync();
@@ -29,7 +22,7 @@ public sealed class BusinessServiceClient
     
     public async Task<string> GetHelloAsync(string name)
     {
-        var response = await _httpClient.PostAsJsonAsync("hello", new { Name = name });
+        var response = await httpClient.PostAsJsonAsync("hello", new { Name = name });
         response.EnsureSuccessStatusCode();
         
         var content = await response.Content.ReadAsStringAsync();

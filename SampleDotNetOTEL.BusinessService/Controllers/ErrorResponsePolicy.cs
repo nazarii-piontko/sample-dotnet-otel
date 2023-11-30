@@ -1,16 +1,9 @@
 namespace SampleDotNetOTEL.BusinessService.Controllers;
 
-public class ErrorResponsePolicy
+public class ErrorResponsePolicy(double rate)
 {
-    private readonly double _rate;
-
-    public ErrorResponsePolicy(double rate)
-    {
-        _rate = rate;
-    }
-
     public bool IsProduceError()
     {
-        return Random.Shared.NextDouble() > _rate;
+        return Random.Shared.NextDouble() > rate;
     }
 }
