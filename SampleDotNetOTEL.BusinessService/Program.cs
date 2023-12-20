@@ -36,7 +36,7 @@ builder.Services.AddTransient<WeatherDbInitializer>();
 
 builder.Services.AddHostedService<MessagesProcessingBackgroundService>();
 
-builder.Services.Configure<AspNetCoreInstrumentationOptions>(options =>
+builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
 {
     // Filter out instrumentation of the Prometheus scraping endpoint.
     options.Filter = ctx => ctx.Request.Path != "/metrics";

@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   jaeger:
-    image: jaegertracing/all-in-one:1.51
+    image: jaegertracing/all-in-one:1.52
     command: --query.ui-config=/etc/jaeger/jaeger-ui.json --collector.otlp.enabled=true --prometheus.server-url=http://prometheus:9090 --prometheus.query.support-spanmetrics-connector=true
     environment:
       - METRICS_STORAGE_TYPE=prometheus
@@ -16,7 +16,7 @@ services:
       - backend
   
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.90.0
+    image: otel/opentelemetry-collector-contrib:0.91.0
     command: --config /etc/otelcol/otel-collector-config.yml
     volumes:
       - ./Configs/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
@@ -28,7 +28,7 @@ services:
       - jaeger
  
   prometheus:
-    image: prom/prometheus:v2.48.0
+    image: prom/prometheus:v2.48.1
     volumes:
       - ./Configs/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -37,7 +37,7 @@ services:
       - backend
   
   loki:
-    image: grafana/loki:2.9.2
+    image: grafana/loki:2.9.3
     command: -config.file=/mnt/config/loki-config.yml
     volumes:
       - ./Configs/loki.yml:/mnt/config/loki-config.yml
@@ -47,7 +47,7 @@ services:
       - backend
   
   grafana:
-    image: grafana/grafana:10.2.2
+    image: grafana/grafana:10.2.3
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -181,7 +181,7 @@ services:
           curl -s "http://proxy-service/hello" || true
           curl -s "http://proxy-service/hello?name=John" || true
           curl -s -X POST -H "Content-Type: application/json" -d "{\"message\": \"This is a test message send thought RabbitMQ ($$(date))\"}" "http://proxy-service/messages" || true
-          sleep 0.5
+          sleep 0.25
         done
     networks:
       - backend

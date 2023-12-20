@@ -34,7 +34,7 @@ builder.Services.AddHttpClient<BusinessServiceClient>(c =>
 
 builder.Services.AddSingleton<MessageBroker>();
 
-builder.Services.Configure<AspNetCoreInstrumentationOptions>(options =>
+builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
 {
     // Filter out instrumentation of the Prometheus scraping endpoint.
     options.Filter = ctx => ctx.Request.Path != "/metrics";
